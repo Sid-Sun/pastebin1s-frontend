@@ -11,6 +11,7 @@ const root = ReactDOM.createRoot(
 const Application = () => useRoutes([
   { path: "/", element: <App /> },
   { path: "/:id", element: <App /> },
+  { path: "*", element: <App /> },
 ]);
 
 root.render(

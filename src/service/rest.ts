@@ -1,23 +1,26 @@
 import axios from "axios";
 import { environment } from "../environment";
 import { SnippetModel } from "../model";
-import { ServiceInterface } from "./model";
 
-interface CreateResponse {
-    URL: string
-}
-
-export class RestService implements ServiceInterface {
+export class RestService {
     setAlert: (message: string) => void
 
     save(snippet: SnippetModel) {
         const setAlert = this.setAlert
         return new Promise<string>(async (resolve, reject) => {
             setAlert('saving snippet')
-            axios.post(environment.APIBaseURL, snippet).then((res) => {
-                const data: CreateResponse = res.data
+            let bodyFormData = new FormData();
+            bodyFormData.append("api_paste_private", "1")
+            bodyFormData.append("api_paste_code", snippet.data)
+            bodyFormData.append("api_option", "paste")
+            bodyFormData.append("api_paste_expire_date", snippet.metadata.ephemeral ? "1M" : "N")
+            axios.post(environment.APIBaseURL + "create", bodyFormData).then((res) => {
+                let data = {
+                    URL: res.data
+                }
                 const urlParts = data.URL.split('/')
                 const id = urlParts[urlParts.length - 1]
+                setAlert('saved')
                 resolve(id)
             }).catch(e => {
                 reject(e)
@@ -29,8 +32,16 @@ export class RestService implements ServiceInterface {
         const setAlert = this.setAlert
         return new Promise<SnippetModel>(async (resolve, reject) => {
             setAlert('downloading snippet')
-            axios.get(environment.APIBaseURL + id).then((res) => {
-                const data: SnippetModel = res.data
+            axios.get(environment.APIBaseURL + "get/" + id).then((res) => {
+                const data: SnippetModel = {
+                    data: res.data,
+                    metadata: { // dummy metadata as pastebin does not expose metadata info through API
+                        id: id,
+                        language: "markdown",
+                        ephemeral: true
+                    }
+                }
+                setAlert('downloaded')
                 resolve(data)
             }).catch(e => {
                 reject(e)

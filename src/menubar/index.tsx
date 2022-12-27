@@ -22,10 +22,6 @@ interface menubarProps {
     ephemeral: boolean
     setEphemeral: (arg0: boolean) => void
   }
-  useE2EE: {
-    useE2EE: boolean
-    setUseE2EE: (arg0: boolean) => void
-  }
   id?: string
   save: () => void
   duplicateAndEdit: () => void
@@ -42,13 +38,12 @@ function MenuBar(props: menubarProps) {
   let { language, setLanguage } = props.language
   let { wrapLine, setWrapLine } = props.wrapLine
   let { ephemeral, setEphemeral } = props.ephemeral
-  let { useE2EE, setUseE2EE } = props.useE2EE
 
   return (
     <Fragment>
       <div className="bg-gray-800 text-white h-screen">
         {props.showBranding && <div className="p-8 bg-purple-800">
-          <a className="font-mono text-center text-2xl block" href="/">i/o/ctl</a>
+          <a className="font-mono text-center text-2xl block" href="/">PASTEBIN(1s)</a>
         </div>}
         <div>
           <h4 className="font-mono text-center text-xl pb-4 pt-6">Editor Options</h4>
@@ -69,10 +64,6 @@ function MenuBar(props: menubarProps) {
           <div className="items-stretch form-check px-8 mt-1">
             <input checked={wrapLine} onChange={() => setWrapLine(!wrapLine)} type="checkbox" id="wordwrap" className="form-check-input" />
             <label htmlFor="wordwrap" className="text-center font-mono pl-2">Wrap Text</label>
-          </div>
-          <div className="items-stretch form-check px-8 mt-1 pb-3">
-            <input checked={useE2EE} onChange={() => setUseE2EE(!useE2EE)} type="checkbox" id="useE2EE" className="form-check-input" />
-            <label htmlFor="useE2EE" className="text-center font-mono pl-2">Use E2EE</label>
           </div>
           <h4 className="font-mono text-center text-xl py-4">Snippet Options</h4>
           <div className="items-center form-check pb-0 px-8">
@@ -100,22 +91,29 @@ function MenuBar(props: menubarProps) {
               {enableAllLanguages && <option value="yaml">yaml</option>}
             </select>
           </div>
-          <div className="items-stretch form-check px-8 py-3">
-            <input disabled={props.readOnly || props.loading} checked={ephemeral} onChange={() => setEphemeral(!ephemeral)} type="checkbox" id="ephemeral" className="form-check-input" />
-            <label htmlFor="ephemeral" className="text-center font-mono pl-2">Save Temporarily</label>
-          </div>
+          {!props.readOnly &&
+            <div className="items-stretch form-check px-8 py-3">
+              <input disabled={props.readOnly || props.loading} checked={ephemeral} onChange={() => setEphemeral(!ephemeral)} type="checkbox" id="ephemeral" className="form-check-input" />
+              <label htmlFor="ephemeral" className="text-center font-mono pl-2">Delete after 1 month</label>
+            </div>
+          }
           <div className="flex space-x-2 justify-center">
             {!props.readOnly && <button disabled={props.loading} onClick={props.save} className="inline-block w-5/6 px-6 py-2.5 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
               <p>Save</p>
             </button>}
-            {props.readOnly && <button disabled={props.loading} onClick={props.duplicateAndEdit} type="button" className="inline-block w-5/6 px-6 py-2.5 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" >
+            {props.readOnly && <button disabled={props.loading} onClick={props.duplicateAndEdit} type="button" className="inline-block w-5/6 px-6 py-2.5 mt-3 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" >
               Duplicate and Edit
             </button>}
           </div>
         </div>
         {props.id && <div className="flex space-x-2 justify-center mt-3">
-          <a type="button" href={environment.APIBaseURL + "r/" + props.id} className="inline-block w-5/6 px-6 py-2.5 bg-pink-700 text-center text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" >
+          <a type="button" href={"https://pastebin.com/raw/" + props.id} className="inline-block w-5/6 px-6 py-2.5 bg-pink-700 text-center text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" >
             raw
+          </a>
+        </div>}
+        {props.id && <div className="flex space-x-2 justify-center mt-3">
+          <a type="button" href={"https://pastebin.com/" + props.id} className="inline-block w-5/6 px-6 py-2.5 bg-green-700 text-center text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" >
+            Go to Pastebin
           </a>
         </div>}
         {(props.alert !== '') &&
@@ -123,9 +121,10 @@ function MenuBar(props: menubarProps) {
             <span>{props.alert}</span>
           </div>}
         <div>
-          <a className="font-mono text-center text-l mt-4 mb-3 cursor-pointer block" href="/About">About</a>
+          <a className="font-mono text-center text-l mt-4 mb-3 cursor-pointer block" href="https://pastebin1s.com/0ePz2c2d">About</a>
           <a className="font-mono text-center text-l my-3  cursor-pointer block" href="https://github.com/sid-sun/ioctl" target="_blank">GitHub</a>
-          <a className="font-mono text-center text-l my-3 cursor-pointer block" href="/PrivacyPolicy">Privacy Policy</a>
+          <a className="font-mono text-center text-l my-3 cursor-pointer block" href="https://bin.dronk.dev">Full Version</a>
+          <a className="font-mono text-center text-l my-3 cursor-pointer block" href="https://pastebin1s.com/0ePz2c2d">Privacy Policy</a>
         </div>
       </div>
     </Fragment>
