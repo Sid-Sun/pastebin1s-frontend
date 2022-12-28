@@ -13,15 +13,10 @@ const handleThemeChange = (theme: string, setSelectedTheme: (arg0: Extension) =>
                 })
             break
         case 'xcode-dark':
+        case 'xcode-light':
             import('@uiw/codemirror-theme-xcode')
-                .then(theme => {
-                    setSelectedTheme(theme.xcodeDark)
-                })
-            break
-        case 'eclipse':
-            import('@uiw/codemirror-theme-eclipse')
-                .then(theme => {
-                    setSelectedTheme(theme.eclipse)
+                .then(themeExtension => {
+                    theme === "xcode-dark" ? setSelectedTheme(themeExtension.xcodeDark) : setSelectedTheme(themeExtension.xcodeLight)
                 })
             break
     }

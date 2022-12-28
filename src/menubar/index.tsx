@@ -53,7 +53,7 @@ function MenuBar(props: menubarProps) {
               <option value="duotone-dark">Duotone Dark</option>
               <option value="github-dark">Github Dark</option>
               <option value="xcode-dark">Xcode Dark</option>
-              <option value="eclipse">Eclipse Light</option>
+              <option value="xcode-light">Xcode Light</option>
             </select>
           </div>
           <div className="px-8 mt-1">
