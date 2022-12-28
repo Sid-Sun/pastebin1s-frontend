@@ -39,8 +39,10 @@ const handleLanguageChange = (language: string, setSelectedLanguage: (arg0: Exte
             break
         case 'markdown':
             import('@codemirror/lang-markdown')
-                .then(lang => {
-                    setSelectedLanguage(lang.markdownLanguage)
+                .then(langExtension => {
+                    import('@codemirror/language-data').then(languageData => {
+                        setSelectedLanguage(langExtension.markdown({ base: langExtension.markdownLanguage, codeLanguages: languageData.languages }))
+                    })
                 })
             break
         case 'python':
@@ -99,6 +101,6 @@ const handleLanguageChange = (language: string, setSelectedLanguage: (arg0: Exte
                 })
             break
     }
-} 
+}
 
 export default handleLanguageChange
