@@ -33,6 +33,9 @@ export class RestService {
         return new Promise<SnippetModel>(async (resolve, reject) => {
             setAlert('downloading snippet')
             axios.get(environment.APIBaseURL + "get/" + id).then((res) => {
+                if (!(res.data instanceof String)) {
+                    res.data = JSON.stringify(res.data)
+                }
                 const data: SnippetModel = {
                     data: res.data,
                     metadata: { // dummy metadata as pastebin does not expose metadata info through API
