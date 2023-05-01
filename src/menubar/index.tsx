@@ -121,9 +121,8 @@ function MenuBar(props: menubarProps) {
             <span>{props.alert}</span>
           </div>}
         <div>
-          <a className="font-mono text-center text-l mt-4 mb-3 cursor-pointer block" href="https://pastebin1s.com/0ePz2c2d">About</a>
-          <a className="font-mono text-center text-l my-3  cursor-pointer block" href="https://github.com/sid-sun/ioctl" target="_blank">GitHub</a>
-          <a className="font-mono text-center text-l my-3 cursor-pointer block" href="https://bin.dronk.dev">Full Version</a>
+          <a className="font-mono text-center text-l mt-4 mb-3 cursor-pointer block" href="https://pastebin1s.com/Ethhhtda">About</a>
+          <a className="font-mono text-center text-l my-3  cursor-pointer block" href="https://github.com/sid-sun/pastebin1s-frontend" target="_blank">GitHub</a>
           <a className="font-mono text-center text-l my-3 cursor-pointer block" href="https://pastebin1s.com/0ePz2c2d">Privacy Policy</a>
         </div>
       </div>
