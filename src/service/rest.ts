@@ -33,7 +33,7 @@ export class RestService {
         return new Promise<SnippetModel>(async (resolve, reject) => {
             setAlert('downloading snippet')
             axios.get(environment.APIBaseURL + "get/" + id).then((res) => {
-                if (!(res.data instanceof String)) {
+                if (typeof res.data !== 'string') {
                     res.data = JSON.stringify(res.data)
                 }
                 const data: SnippetModel = {

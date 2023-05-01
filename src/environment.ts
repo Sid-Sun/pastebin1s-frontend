@@ -1,3 +1,3 @@
 export const environment = {
-    APIBaseURL: "https://p1s.azurewebsites.net/api/",
+    APIBaseURL: "https://api.pastebin1s.com/",
 }
