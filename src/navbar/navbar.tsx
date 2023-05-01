@@ -11,7 +11,7 @@ function navbar(props: navbarProps) {
             <nav className="relative w-full flex flex-wrap items-center justify-between py-4 bg-purple-800 text-white">
                 <div className="container-fluid w-full flex flex-wrap items-center justify-between px-6">
                     <div className="container-fluid">
-                        <a className="font-mono text-center text-xl block" href="/">i/o/ctl</a>
+                        <a className="font-mono text-center text-xl block" href="/">PASTEBIN(1s)</a>
                     </div>
                     <a onClick={() => props.setMenubarDisplay(!props.menubar)} className="font-mono text-center text-xl block">{props.menubar ? 'editor' : 'menu'}</a>
                 </div>
