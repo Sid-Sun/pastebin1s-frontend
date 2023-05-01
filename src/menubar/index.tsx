@@ -50,10 +50,9 @@ function MenuBar(props: menubarProps) {
           <div className="items-center px-8">
             <label htmlFor="theme" className="text-center font-mono pb-2">Theme:</label>
             <select id="theme" value={theme} onChange={e => setTheme(e.target.value)} className="form-select appearance-none block w-full px-1 py-0.5 text-base font-mono text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out mx-0 mt-0.5 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
-              <option value="duotone-dark">Duotone Dark</option>
-              <option value="github-dark">Github Dark</option>
-              <option value="xcode-dark">Xcode Dark</option>
-              <option value="xcode-light">Xcode Light</option>
+              <option value="aura">Aura Dark</option>
+              <option value="github-dark">GitHub Dark</option>
+              <option value="bbedit">BBEdit Light</option>
             </select>
           </div>
           <div className="px-8 mt-1">

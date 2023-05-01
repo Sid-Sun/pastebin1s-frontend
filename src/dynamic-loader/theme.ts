@@ -1,24 +1,26 @@
 import { Extension } from "@codemirror/state";
-import { duotoneDark } from "@uiw/codemirror-theme-duotone";
+import { aura } from "@uiw/codemirror-theme-aura";
 
-const handleThemeChange = (theme: string, setSelectedTheme: (arg0: Extension) => void) => {
+const handleThemeChange = (theme: string, setSelectedTheme: (arg0: Extension) => void): string => {
     switch (theme) {
-        case 'duotone-dark':
-            setSelectedTheme(duotoneDark)
-            break
         case 'github-dark':
             import('@uiw/codemirror-theme-github')
                 .then(theme => {
                     setSelectedTheme(theme.githubDark)
                 })
-            break
-        case 'xcode-dark':
-        case 'xcode-light':
-            import('@uiw/codemirror-theme-xcode')
-                .then(themeExtension => {
-                    theme === "xcode-dark" ? setSelectedTheme(themeExtension.xcodeDark) : setSelectedTheme(themeExtension.xcodeLight)
+            return 'github-dark'
+        case 'bbedit':
+            import('@uiw/codemirror-theme-bbedit')
+                .then(theme => {
+                    setSelectedTheme(theme.bbedit)
                 })
-            break
+            return 'bbedit'
+        case 'aura':
+            setSelectedTheme(aura)
+            return 'aura'
+        default:
+            setSelectedTheme(aura)
+            return 'aura'
     }
 }
 

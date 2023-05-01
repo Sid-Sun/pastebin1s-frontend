@@ -4,8 +4,6 @@ import CodeMirror from '@uiw/react-codemirror';
 import { useEffect, useRef, useState } from 'react';
 import { EditorView } from "@codemirror/view";
 import { useNavigate, useParams } from "react-router-dom";
-import { duotoneDark } from '@uiw/codemirror-theme-duotone';
-
 import './App.css';
 
 import MenuBar from './menubar'
@@ -15,6 +13,7 @@ import getFontSizeThemeExtension from './fonts'
 import useWindowDimensions from './dimensions';
 import { handleLanguageChange, handleThemeChange } from './dynamic-loader';
 import { RestService } from './service/rest';
+import { aura } from '@uiw/codemirror-theme-aura';
 
 function App() {
   const navigate = useNavigate()
@@ -32,8 +31,8 @@ function App() {
   // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary
   let [fontSize, setFontSize] = useState<number>(localStorage.getItem('fontsize') === null ? 16 : parseInt(localStorage.getItem('fontsize')))
   // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary 
-  let [theme, setTheme] = useState<string>(localStorage.getItem('theme') === null ? "duotone-dark" : localStorage.getItem('theme')) // stores name of theme
-  let [selectedTheme, setSelectedTheme] = useState<Extension>(duotoneDark) // stores theme extenstion
+  let [theme, setTheme] = useState<string>(localStorage.getItem('theme') === null ? "aura" : localStorage.getItem('theme')) // stores name of theme
+  let [selectedTheme, setSelectedTheme] = useState<Extension>(aura) // stores theme extenstion
   // Snippet State Properties
   let [ephemeral, setEphemeral] = useState<boolean>(true)
   let [language, setLanguage] = useState<string>("markdown")
@@ -81,7 +80,12 @@ function App() {
   }, [language]) // runs only on language change
 
   useEffect(() => {
-    handleThemeChange(theme, setSelectedTheme)
+    const newTheme = handleThemeChange(theme, setSelectedTheme)
+    if (newTheme !== theme) {
+      // the theme name was either invalid or theme has been deprecated
+      // set the new theme name as selected theme 
+      setTheme(newTheme)
+    }
   }, [theme]) // only runs when theme changes
 
   // load snippet if param 'id' is present
