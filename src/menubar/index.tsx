@@ -1,48 +1,28 @@
 import { Fragment, useState } from "react"
-import { environment } from "../environment"
-
+import { useEditorStore } from "../editorStore"
+import { useSnippetStore } from "../snippetStore"
 interface menubarProps {
-  font: {
-    fontSize: number
-    setFontSize: (atg0: number) => void
-  }
-  wrapLine: {
-    wrapLine: boolean
-    setWrapLine: (arg0: boolean) => void
-  }
-  theme: {
-    theme: string
-    setTheme: (arg0: string) => void
-  }
-  language: {
-    language: string
-    setLanguage: (arg0: string) => void
-  }
-  ephemeral: {
-    ephemeral: boolean
-    setEphemeral: (arg0: boolean) => void
-  }
   id?: string
   save: () => void
   duplicateAndEdit: () => void
-  loading: boolean
-  readOnly: boolean
-  showBranding: boolean
-  alert: string
 }
 
 function MenuBar(props: menubarProps) {
+  let showBranding = !useEditorStore.use.menuOpen
+  let alert = useEditorStore.use.alert()
   let [enableAllLanguages, setEnableAllLanguages] = useState<boolean>(false)
-  let { theme, setTheme } = props.theme
-  let { fontSize, setFontSize } = props.font
-  let { language, setLanguage } = props.language
-  let { wrapLine, setWrapLine } = props.wrapLine
-  let { ephemeral, setEphemeral } = props.ephemeral
+  let loading = useEditorStore.use.loading()
+  let readOnly = useEditorStore.use.readOnly()
+  let { theme, setTheme } = useEditorStore(state => ({ theme: state.theme, setTheme: state.setTheme }))
+  let { fontSize, setFontSize } = useEditorStore(state => ({ fontSize: state.fontSize, setFontSize: state.setFontSize }))
+  let { language, setLanguage } = useSnippetStore(state => ({ language: state.language, setLanguage: state.setLanguage }))
+  let { wrapLines, setWrapLines } = useEditorStore(state => ({ wrapLines: state.wrapLines, setWrapLines: state.setWrapLines }))
+  let { ephemeral, setEphemeral } = useSnippetStore(state => ({ ephemeral: state.ephemeral, setEphemeral: state.setEphemeral }))
 
   return (
     <Fragment>
       <div className="bg-gray-800 text-white h-screen">
-        {props.showBranding && <div className="p-8 bg-purple-800">
+        {showBranding && <div className="p-8 bg-purple-800">
           <a className="font-mono text-center text-2xl block" href="/">PASTEBIN(1s)</a>
         </div>}
         <div>
@@ -61,17 +41,17 @@ function MenuBar(props: menubarProps) {
             <input onChange={e => setFontSize(parseInt(e.target.value))} value={fontSize} type="range" id="fontSize" max="26" min="10" step="1" className="w-full form-check-input" />
           </div>
           <div className="items-stretch form-check px-8 mt-1">
-            <input checked={wrapLine} onChange={() => setWrapLine(!wrapLine)} type="checkbox" id="wordwrap" className="form-check-input" />
+            <input checked={wrapLines} onChange={() => setWrapLines(!wrapLines)} type="checkbox" id="wordwrap" className="form-check-input" />
             <label htmlFor="wordwrap" className="text-center font-mono pl-2">Wrap Text</label>
           </div>
           <h4 className="font-mono text-center text-xl py-4">Snippet Options</h4>
           <div className="items-center form-check pb-0 px-8">
-            <input disabled={props.loading} checked={enableAllLanguages} onChange={() => setEnableAllLanguages(!enableAllLanguages)} type="checkbox" id="showAll" className="form-check-input" />
+            <input disabled={loading} checked={enableAllLanguages} onChange={() => setEnableAllLanguages(!enableAllLanguages)} type="checkbox" id="showAll" className="form-check-input" />
             <label htmlFor="showAll" className="text-center font-mono pl-2">Show All Languages</label>
           </div>
           <div className="items-center px-8 mt-0">
             <label htmlFor="language" className="text-center font-mono pb-2">Language:</label>
-            <select disabled={props.loading} value={language} onChange={e => setLanguage(e.target.value)} id="language" className="form-select appearance-none block w-full px-1 py-0.5 text-base font-mono text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out mx-0 mt-0.5 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+            <select disabled={loading} value={language} onChange={e => setLanguage(e.target.value)} id="language" className="form-select appearance-none block w-full px-1 py-0.5 text-base font-mono text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out mx-0 mt-0.5 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
               <option value="cpp">c++</option>
               {enableAllLanguages && <option value="dockerfile">dockerfile</option>}
               <option value="go">go</option>
@@ -90,17 +70,17 @@ function MenuBar(props: menubarProps) {
               {enableAllLanguages && <option value="yaml">yaml</option>}
             </select>
           </div>
-          {!props.readOnly &&
+          {!readOnly &&
             <div className="items-stretch form-check px-8 py-3">
-              <input disabled={props.readOnly || props.loading} checked={ephemeral} onChange={() => setEphemeral(!ephemeral)} type="checkbox" id="ephemeral" className="form-check-input" />
+              <input disabled={readOnly || loading} checked={ephemeral} onChange={() => setEphemeral(!ephemeral)} type="checkbox" id="ephemeral" className="form-check-input" />
               <label htmlFor="ephemeral" className="text-center font-mono pl-2">Delete after 1 month</label>
             </div>
           }
           <div className="flex space-x-2 justify-center">
-            {!props.readOnly && <button disabled={props.loading} onClick={props.save} className="inline-block w-5/6 px-6 py-2.5 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+            {!readOnly && <button disabled={loading} onClick={props.save} className="inline-block w-5/6 px-6 py-2.5 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
               <p>Save</p>
             </button>}
-            {props.readOnly && <button disabled={props.loading} onClick={props.duplicateAndEdit} type="button" className="inline-block w-5/6 px-6 py-2.5 mt-3 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" >
+            {readOnly && <button disabled={loading} onClick={props.duplicateAndEdit} type="button" className="inline-block w-5/6 px-6 py-2.5 mt-3 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" >
               Duplicate and Edit
             </button>}
           </div>
@@ -115,13 +95,13 @@ function MenuBar(props: menubarProps) {
             Go to Pastebin
           </a>
         </div>}
-        {(props.alert !== '') &&
+        {(alert !== '') &&
           <div className="my-3 mx-8 py-2 px-5 bg-gray-300 text-gray-900 rounded-md text-sm border border-gray-400 flex" >
-            <span>{props.alert}</span>
+            <span>{alert}</span>
           </div>}
         <div>
           <a className="font-mono text-center text-l mt-4 mb-3 cursor-pointer block" href="https://pastebin1s.com/Ethhhtda">About</a>
-          <a className="font-mono text-center text-l my-3  cursor-pointer block" href="https://github.com/sid-sun/pastebin1s-frontend" target="_blank">GitHub</a>
+          <a className="font-mono text-center text-l my-3  cursor-pointer block" href="https://github.com/sid-sun/pastebin1s-frontend" rel="noreferrer" target="_blank">GitHub</a>
           <a className="font-mono text-center text-l my-3 cursor-pointer block" href="https://pastebin1s.com/0ePz2c2d">Privacy Policy</a>
         </div>
       </div>
