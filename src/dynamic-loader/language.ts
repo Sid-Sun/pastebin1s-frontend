@@ -1,9 +1,19 @@
 import { StreamLanguage } from "@codemirror/language"
+import { Extension } from "@codemirror/state";
 import { useSnippetStore } from "../snippetStore";
 
-const setLanguageExtension = useSnippetStore.getState().setLanguageExtension
+const handleLanguageChange = (snippetID: number) => {
+  // get the language from the snippet store
+  // and create a method to the language extension
+  const snippet = useSnippetStore.getState().snippets[snippetID]
+  if (snippet === undefined) {
+    return
+  }
+  const language = snippet.language
+  const setLanguageExtension = (lang?: Extension) => {
+    useSnippetStore.getState().updateSnippet(snippetID, { languageExtension: lang })
+  }
 
-const handleLanguageChange = (language: string) => {
   switch (language) {
     case 'plaintext':
       setLanguageExtension(undefined)
