@@ -34,13 +34,15 @@ const getDefaultValues = (): EditorStore => ({
   dismisser: undefined,
   desktopView: getWindowDimensions().width >= 1024,
   menuOpen: false,
+  splitPane: true,
   dimensions: getWindowDimensions(),
   wrapLines: localStorage.getItem('wrapline') === "no" ? false : true,
   fontSize: getFontSize(),
   // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary
   theme: (localStorage.getItem('theme') === null ? "aura" : localStorage.getItem('theme')),
   themeExtension: aura,
-  extensions: [getFontSizeExtension(getFontSize())],
+  primaryExtensions: [getFontSizeExtension(getFontSize())],
+  secondaryExtensions: [getFontSizeExtension(getFontSize())],
 })
 
 interface EditorStore {
@@ -49,6 +51,7 @@ interface EditorStore {
   editorWidth: number,
   editorHeight: number,
   readOnly: boolean,
+  splitPane: boolean,
   loading: boolean,
   alert: string | undefined,
   desktopView: boolean,
@@ -57,7 +60,8 @@ interface EditorStore {
   theme: string,
   themeExtension: Extension,
   menuOpen: boolean,
-  extensions: Extension[]
+  primaryExtensions: Extension[]
+  secondaryExtensions: Extension[]
 }
 
 interface EditorStoreActions {
@@ -66,6 +70,7 @@ interface EditorStoreActions {
   setEditorWidth: (editorWidth: number) => void,
   setEditorHeight: (editorHeight: number) => void,
   setReadOnly: (readonly: boolean) => void,
+  setSplitPane: (splitPane: boolean) => void,
   setLoading: (loading: boolean) => void,
   setAlert: (alert: string | undefined) => void,
   setDesktopView: (desktopView: boolean) => void,
@@ -74,7 +79,8 @@ interface EditorStoreActions {
   setTheme: (theme: string) => void,
   setThemeExtension: (themeExtension: Extension) => void,
   setMenuOpen: (menuOpen: boolean) => void,
-  setExtensions: (extensions: Extension[]) => void
+  setPrimaryExtensions: (extensions: Extension[]) => void,
+  setSecondaryExtensions: (extensions: Extension[]) => void
 }
 
 const useEditorStoreBase = create<EditorStore & EditorStoreActions>(combine(getDefaultValues(), (set) => ({
@@ -82,6 +88,7 @@ const useEditorStoreBase = create<EditorStore & EditorStoreActions>(combine(getD
   setDimensions: (dimensions: { width: number, height: number }) => set({ dimensions }),
   setEditorWidth: (editorWidth: number) => set({ editorWidth }),
   setEditorHeight: (editorHeight: number) => set({ editorHeight }),
+  setSplitPane: (splitPane: boolean) => set({ splitPane }),
   setReadOnly: (readOnly: boolean) => set({ readOnly }),
   setLoading: (loading: boolean) => set({ loading }),
   setAlert: (alert: string | undefined) => set({ alert }),
@@ -100,7 +107,8 @@ const useEditorStoreBase = create<EditorStore & EditorStoreActions>(combine(getD
   },
   setThemeExtension: (themeExtension: Extension) => set({ themeExtension }),
   setMenuOpen: (menuOpen: boolean) => set({ menuOpen }),
-  setExtensions: (extensions: Extension[]) => set({ extensions })
+  setPrimaryExtensions: (primaryExtensions: Extension[]) => set({ primaryExtensions }),
+  setSecondaryExtensions: (secondaryExtensions: Extension[]) => set({ secondaryExtensions })
 })))
 
 export const useEditorStore = createSelectors(useEditorStoreBase)

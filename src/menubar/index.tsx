@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react"
 import { useEditorStore } from "../editorStore"
 import { useSnippetStore } from "../snippetStore"
+import SnippetContainer from "./SnippetContainer/SnippetContainer"
 interface menubarProps {
   id?: string
   save: () => void
@@ -8,20 +9,28 @@ interface menubarProps {
 }
 
 function MenuBar(props: menubarProps) {
-  let showBranding = !useEditorStore.use.menuOpen
+  let snippets = useSnippetStore.use.snippets()
+  let showBranding = !useEditorStore.use.menuOpen()
   let alert = useEditorStore.use.alert()
   let [enableAllLanguages, setEnableAllLanguages] = useState<boolean>(false)
   let loading = useEditorStore.use.loading()
   let readOnly = useEditorStore.use.readOnly()
   let { theme, setTheme } = useEditorStore(state => ({ theme: state.theme, setTheme: state.setTheme }))
   let { fontSize, setFontSize } = useEditorStore(state => ({ fontSize: state.fontSize, setFontSize: state.setFontSize }))
-  let { language, setLanguage } = useSnippetStore(state => ({ language: state.language, setLanguage: state.setLanguage }))
+  const primarySnippet = snippets[0]
+  let language = primarySnippet.language
+  let setLanguage = (language: string) => {
+    useSnippetStore.getState().updateSnippet(0, {
+      language,
+    })
+  }
+  // let { setLanguage } = useSnippetStore(state => ({ language: state.language, setLanguage: state.setLanguage }))
   let { wrapLines, setWrapLines } = useEditorStore(state => ({ wrapLines: state.wrapLines, setWrapLines: state.setWrapLines }))
   let { ephemeral, setEphemeral } = useSnippetStore(state => ({ ephemeral: state.ephemeral, setEphemeral: state.setEphemeral }))
 
   return (
     <Fragment>
-      <div className="bg-gray-800 text-white h-screen">
+      <div className="bg-gray-800 text-white min-h-screen max-h-screen overflow-auto">
         {showBranding && <div className="p-8 bg-purple-800">
           <a className="font-mono text-center text-2xl block" href="/">PASTEBIN(1s)</a>
         </div>}
@@ -104,6 +113,7 @@ function MenuBar(props: menubarProps) {
           <a className="font-mono text-center text-l my-3  cursor-pointer block" href="https://github.com/sid-sun/pastebin1s-frontend" rel="noreferrer" target="_blank">GitHub</a>
           <a className="font-mono text-center text-l my-3 cursor-pointer block" href="https://pastebin1s.com/0ePz2c2d">Privacy Policy</a>
         </div>
+        <SnippetContainer />
       </div>
     </Fragment>
   )

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { Extension } from "@codemirror/state";
 import { StoreApi, UseBoundStore } from 'zustand'
+import diceware from './diceware'
 
 type WithSelectors<S> = S extends { getState: () => infer T }
   ? S & { use: { [K in keyof T]: () => T[K] } }
@@ -18,29 +19,93 @@ const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
   return store
 }
 
-interface SnippetStore {
-  ephemeral: boolean,
+export interface SnippetUpdate {
+  name?: string,
+  language?: string,
+  document?: string,
+  languageExtension?: Extension,
+}
+
+export interface Snippet {
+  name: string,
   language: string,
   document: string,
-  languageExtension: Extension | undefined
+  languageExtension: Extension | undefined,
+}
+
+interface SnippetStore {
+  ephemeral: boolean,
+  snippets: Snippet[],
 }
 
 interface SnippetStoreActions {
-  setLanguage: (language: string) => void,
-  setDocument: (document: string) => void,
+  createSnippet: () => void,
+  removeSnippet: (id: number) => void,
+  updateSnippet: (id: number, snippet: SnippetUpdate) => void,
+  makeSnippetPrimary: (id: number) => void,
+  makeSnippetSecondary: (id: number) => void,
   setEphemeral: (ephemeral: boolean) => void,
-  setLanguageExtension: (languageExtension: Extension | undefined) => void
 }
 
 const useSnippetStoreBase = create<SnippetStore & SnippetStoreActions>((set) => ({
   ephemeral: true,
   setEphemeral: (ephemeral: boolean) => set({ ephemeral }),
-  language: 'markdown',
-  setLanguage: (language: string) => set({ language }),
-  document: '',
-  setDocument: (document: string) => set({ document }),
-  languageExtension: undefined,
-  setLanguageExtension: (languageExtension: Extension | undefined) => set({ languageExtension })
+  snippets: [
+    {
+      name: diceware(),
+      language: 'markdown',
+      document: '',
+      languageExtension: undefined
+    },
+    {
+      name: diceware(),
+      language: 'markdown',
+      document: '',
+      languageExtension: undefined
+    }
+  ],
+  createSnippet: () => set((state) => ({
+    snippets: [...state.snippets, {
+      name: diceware(),
+      language: 'markdown',
+      document: '',
+      languageExtension: undefined
+    }]
+  })),
+  removeSnippet: (id: number) => set((state) => ({
+    snippets: state.snippets.length === 1 ? [{
+      name: diceware(),
+      language: 'markdown',
+      document: '',
+      languageExtension: undefined
+    }] : state.snippets.filter((_, i) => i !== id)
+  })),
+  updateSnippet: (id: number, update: SnippetUpdate) => set((state) => {
+    const newSnippets = [...state.snippets]
+    const oldSnippet = state.snippets[id]
+    newSnippets[id] = { ...oldSnippet, ...update }
+    return { snippets: newSnippets }
+  }),
+  makeSnippetPrimary: (id: number) => set((state) => {
+    if (id === 0 || state.snippets.length < 2) {
+      return state
+    }
+    const newSnippets = [...state.snippets]
+    const temp = newSnippets[0]
+    newSnippets[0] = newSnippets[id]
+    newSnippets[id] = temp
+    return { snippets: newSnippets }
+  }),
+  makeSnippetSecondary: (id: number) => set((state) => {
+    if (id === 1 || state.snippets.length < 2) {
+      return state
+    }
+    const newSnippets = [...state.snippets]
+    const temp = newSnippets[1]
+    newSnippets[1] = newSnippets[id]
+    newSnippets[id] = temp
+    return { snippets: newSnippets }
+  }),
 }))
 
 export const useSnippetStore = createSelectors(useSnippetStoreBase)
