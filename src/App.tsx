@@ -26,10 +26,11 @@ function App() {
   const editorContainerRef = useRef<HTMLDivElement>(null)
 
   // Snippet Store State
-  const primarySnippet = useSnippetStore.use.snippets()[0]
+  const snippets = useSnippetStore.use.snippets()
+  const primarySnippet = snippets[0]
   const primaryLanguage = primarySnippet.language
-  const secondarySnippet = useSnippetStore.use.snippets()[1]
-  const secondaryLanguage = secondarySnippet !== undefined ? secondarySnippet.language : undefined
+  const secondarySnippet = snippets[1]
+  const secondaryLanguage = secondarySnippet?.language
   const ephemeral = useSnippetStore.use.ephemeral()
 
   // Editor State - Extensions
@@ -37,11 +38,11 @@ function App() {
   const primaryExtensions = useEditorStore.use.primaryExtensions()
   const secondaryExtensions = useEditorStore.use.secondaryExtensions()
   // Editor State
-  const splitPane = useEditorStore.use.splitPane()
+  const { splitPane, setSplitPane } = useEditorStore(state => ({ splitPane: state.splitPane, setSplitPane: state.setSplitPane }))
   const wrapLines = useEditorStore.use.wrapLines()
   const { theme, setTheme } = useEditorStore(state => ({ theme: state.theme, setTheme: state.setTheme }))
   const themeExtension = useEditorStore.use.themeExtension()
-  const { desktopView } = useEditorStore(state => ({ desktopView: state.desktopView, setDesktopView: state.setDesktopView }))
+  const { desktopView } = useEditorStore(state => ({ desktopView: state.desktopView }))
   const dimensions = useEditorStore.use.dimensions()
   const { menuOpen, setMenuOpen } = useEditorStore(state => ({ menuOpen: state.menuOpen, setMenuOpen: state.setMenuOpen }))
   const { readOnly, setReadOnly } = useEditorStore(state => ({ readOnly: state.readOnly, setReadOnly: state.setReadOnly }))
@@ -206,72 +207,59 @@ function App() {
     console.log("window width changed")
     if (desktopView) {
       setMenuOpen(false)
+    } else {
+      setSplitPane(false)
     }
-    // if (menubarContainerRef.current) {
-    //   console.log("setting menubar height")
-    //   setEditorHeight(desktopView ? menubarContainerRef.current.offsetHeight : dimensions.height - 60)
-    // } else {
     setEditorHeight(desktopView ? dimensions.height : dimensions.height - 60)
-    // }
     if (editorContainerRef.current) {
       setEditorWidth(editorContainerRef.current.offsetWidth)
     }
-  }, [desktopView, dimensions, setMenuOpen, setEditorHeight, setEditorWidth])
+  }, [desktopView, dimensions, setMenuOpen, setEditorHeight, setEditorWidth, setSplitPane])
+
+  useEffect(() => {
+    if (secondarySnippet === undefined) {
+      setSplitPane(false)
+    }
+  }, [secondarySnippet, setSplitPane])
 
   return (
     <div>
       {!desktopView && <NavBar />}
       <div className="flex">
-        {!menuOpen && !splitPane && <div className="lg:w-3/4 xl:w-4/5 2xl:w-5/6 w-screen" ref={editorContainerRef} >
-          <CodeMirror
-            autoFocus={true}
-            value={primarySnippet.document}
-            readOnly={readOnly || loading}
-            theme={themeExtension}
-            extensions={primaryExtensions}
-            // TODO: set editor height based on menubar height (except for mobile - cuz menubar is not visible on mobile)
-            // menubar is always either screen height or more
-            height={editorHeight.toString() + 'px'}
-            width={editorWidth.toString() + 'px'}
-            onChange={(value) => {
-              useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
-                document: value,
-              })
-            }}
-          />
-        </div>}
-        {!menuOpen && splitPane && <div className="flex lg:w-3/4 xl:w-4/5 2xl:w-5/6">
-          <div className="w-screen" style={{ order: 1 }} ref={editorContainerRef} >
+        <div className="flex lg:w-3/4 xl:w-4/5 2xl:w-5/6" ref={editorContainerRef} >
+          {!menuOpen && <div className={splitPane ? "w-1/2" : "w-screen"} >
             <CodeMirror
               autoFocus={true}
-              value={"yellow"}
+              value={primarySnippet.document}
               readOnly={readOnly || loading}
               theme={themeExtension}
               extensions={primaryExtensions}
               height={editorHeight.toString() + 'px'}
-              width={(editorWidth).toString() + 'px'}
+              width={(splitPane ? (editorWidth / 2).toString() : editorWidth.toString()) + 'px'}
               onChange={(value) => {
                 useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
                   document: value,
                 })
-              }} />
-          </div>
-          <div className="w-screen" style={{ order: 2 }} ref={editorContainerRef} >
-            <CodeMirror
-              autoFocus={false}
-              value={secondarySnippet.document}
-              readOnly={readOnly || loading}
-              theme={themeExtension}
-              extensions={secondaryExtensions}
-              height={editorHeight.toString() + 'px'}
-              width={(editorWidth).toString() + 'px'}
-              onChange={(value) => {
-                useSnippetStore.getState().updateSnippet(SECONDARY_SNIPPET, {
-                  document: value,
-                })
-              }} />
-          </div>
-        </div>}
+              }}
+            />
+          </div>}
+          {!menuOpen && snippets.length >= 2 && splitPane &&
+            <div className="w-1/2" style={{ order: 2 }}>
+              <CodeMirror
+                autoFocus={false}
+                value={secondarySnippet.document}
+                readOnly={readOnly || loading}
+                theme={themeExtension}
+                extensions={secondaryExtensions}
+                height={editorHeight.toString() + 'px'}
+                width={(editorWidth / 2).toString() + 'px'}
+                onChange={(value) => {
+                  useSnippetStore.getState().updateSnippet(SECONDARY_SNIPPET, {
+                    document: value,
+                  })
+                }} />
+            </div>}
+        </div>
         {(menuOpen || desktopView) && <div className='lg:w-1/4 xl:w-1/5 2xl:w-1/6 w-full'>
           <MenuBar duplicateAndEdit={onDuplicateAndEdit} id={readOnly ? params.id : undefined} save={() => { }} />
         </div>}
