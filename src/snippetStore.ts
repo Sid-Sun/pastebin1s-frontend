@@ -53,13 +53,7 @@ const useSnippetStoreBase = create<SnippetStore & SnippetStoreActions>((set) => 
   snippets: [
     {
       name: diceware(),
-      language: 'markdown',
-      document: '',
-      languageExtension: undefined
-    },
-    {
-      name: diceware(),
-      language: 'markdown',
+      language: 'plaintext',
       document: '',
       languageExtension: undefined
     }
@@ -67,7 +61,7 @@ const useSnippetStoreBase = create<SnippetStore & SnippetStoreActions>((set) => 
   createSnippet: () => set((state) => ({
     snippets: [...state.snippets, {
       name: diceware(),
-      language: 'markdown',
+      language: 'plaintext',
       document: '',
       languageExtension: undefined
     }]
@@ -75,7 +69,7 @@ const useSnippetStoreBase = create<SnippetStore & SnippetStoreActions>((set) => 
   removeSnippet: (id: number) => set((state) => ({
     snippets: state.snippets.length === 1 ? [{
       name: diceware(),
-      language: 'markdown',
+      language: 'plaintext',
       document: '',
       languageExtension: undefined
     }] : state.snippets.filter((_, i) => i !== id)
