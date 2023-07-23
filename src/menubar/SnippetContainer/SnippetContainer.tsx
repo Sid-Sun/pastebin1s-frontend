@@ -12,8 +12,8 @@ function SnippetContainer() {
   return (<React.Fragment>
     <h4 className="font-mono text-center text-xl pb-4 mt-0">Snippets</h4>
     <div className="flex justify-center space-y-2 flex-col text-center">
-      {snippets.map((_, index) => {
-        return <Snippet key={index} index={index} />
+      {snippets.map((item, index) => {
+        return <Snippet key={item.uuid} index={index} />
       })}
     </div>
     <div className="flex justify-center mt-4 items-stretch">

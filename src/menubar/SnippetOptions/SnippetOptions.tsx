@@ -34,7 +34,7 @@ function SnippetOptions() {
       <input disabled={loading} checked={enableAllLanguages} onChange={() => setEnableAllLanguages(!enableAllLanguages)} type="checkbox" id="showAll" className="form-check-input" />
       <label htmlFor="showAll" className="text-center font-mono pl-2">Show All Languages</label>
     </div>
-    <LanguageSelector language={primaryLanguage} setLanguage={setPrimaryLanguage} label={splitPane ? "Snippet 1 Language:" : "Language:"} />
+    <LanguageSelector language={primaryLanguage} setLanguage={setPrimaryLanguage} label={snippets.length > 1 ? "Snippet 1 Language:" : "Language:"} />
     {splitPane && <LanguageSelector language={secondaryLanguage} setLanguage={setSecondaryLanguage} label="Snippet 2 Language:" />}
     {!readOnly &&
       <div className="items-stretch form-check py-3">
