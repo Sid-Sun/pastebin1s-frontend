@@ -1,4 +1,3 @@
-import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { Extension } from "@codemirror/state";
 import { useEffect, useRef } from 'react';

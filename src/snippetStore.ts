@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { Extension } from "@codemirror/state";
 import { StoreApi, UseBoundStore } from 'zustand'
 import diceware from './diceware'
+import { v4 as uuidv4 } from 'uuid';
 
 type WithSelectors<S> = S extends { getState: () => infer T }
   ? S & { use: { [K in keyof T]: () => T[K] } }
@@ -27,6 +28,7 @@ export interface SnippetUpdate {
 }
 
 export interface Snippet {
+  uuid: string,
   name: string,
   language: string,
   document: string,
@@ -47,32 +49,25 @@ interface SnippetStoreActions {
   setEphemeral: (ephemeral: boolean) => void,
 }
 
+const generateSnippet = (): Snippet => ({
+  uuid: uuidv4(),
+  name: diceware(),
+  language: 'plaintext',
+  document: '',
+  languageExtension: undefined
+})
+
 const useSnippetStoreBase = create<SnippetStore & SnippetStoreActions>((set) => ({
   ephemeral: true,
   setEphemeral: (ephemeral: boolean) => set({ ephemeral }),
   snippets: [
-    {
-      name: diceware(),
-      language: 'plaintext',
-      document: '',
-      languageExtension: undefined
-    }
+    generateSnippet()
   ],
   createSnippet: () => set((state) => ({
-    snippets: [...state.snippets, {
-      name: diceware(),
-      language: 'plaintext',
-      document: '',
-      languageExtension: undefined
-    }]
+    snippets: [...state.snippets, generateSnippet()]
   })),
   removeSnippet: (id: number) => set((state) => ({
-    snippets: state.snippets.length === 1 ? [{
-      name: diceware(),
-      language: 'plaintext',
-      document: '',
-      languageExtension: undefined
-    }] : state.snippets.filter((_, i) => i !== id)
+    snippets: state.snippets.length === 1 ? [generateSnippet()] : state.snippets.filter((_, i) => i !== id)
   })),
   updateSnippet: (id: number, update: SnippetUpdate) => set((state) => {
     const newSnippets = [...state.snippets]
