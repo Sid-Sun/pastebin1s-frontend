@@ -15,7 +15,6 @@ function navbar() {
         </div>
       </nav>
     </React.Fragment>
-
   )
 }
 

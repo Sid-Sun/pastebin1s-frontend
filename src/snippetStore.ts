@@ -32,7 +32,7 @@ export interface Snippet {
   name: string,
   language: string,
   document: string,
-  languageExtension: Extension | undefined,
+  languageExtension?: Extension,
 }
 
 interface SnippetStore {
@@ -44,6 +44,7 @@ interface SnippetStoreActions {
   createSnippet: () => void,
   removeSnippet: (id: number) => void,
   updateSnippet: (id: number, snippet: SnippetUpdate) => void,
+  setSnippets: (snippets: Snippet[]) => void,
   makeSnippetPrimary: (id: number) => void,
   makeSnippetSecondary: (id: number) => void,
   setEphemeral: (ephemeral: boolean) => void,
@@ -75,6 +76,7 @@ const useSnippetStoreBase = create<SnippetStore & SnippetStoreActions>((set) => 
     newSnippets[id] = { ...oldSnippet, ...update }
     return { snippets: newSnippets }
   }),
+  setSnippets: (snippets: Snippet[]) => set({ snippets }),
   makeSnippetPrimary: (id: number) => set((state) => {
     if (id === 0 || state.snippets.length < 2) {
       return state

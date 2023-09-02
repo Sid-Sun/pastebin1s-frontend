@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import { EditorView } from "@codemirror/view";
 import { useNavigate, useParams } from "react-router-dom";
 import './App.css';
-
 import MenuBar from './menubar'
 import NavBar from './navbar/navbar'
 
@@ -26,11 +25,18 @@ function App() {
 
   // Snippet Store State
   const snippets = useSnippetStore.use.snippets()
+  const setSnippets = useSnippetStore.use.setSnippets()
   const primarySnippet = snippets[0]
   const primaryLanguage = primarySnippet.language
   const secondarySnippet = snippets[1]
   const secondaryLanguage = secondarySnippet?.language
   const ephemeral = useSnippetStore.use.ephemeral()
+
+  const setPrimaryDocument = (value: string) => {
+    useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
+      document: value,
+    })
+  }
 
   // Editor State - Extensions
   const fontSize = useEditorStore.use.fontSize()
@@ -124,77 +130,98 @@ function App() {
     }
   }, [theme, setTheme]) // only runs when theme changes
 
-  // // load snippet from pastebin
-  // // if id is present in url
-  // // and document is empty
-  // useEffect(() => {
-  //   if (params.id && document === "") {
-  //     setReadOnly(true)
-  //     setLoading(true)
-  //     let snippetPromise = undefined
-  //     const restLoader = new RestService(setAlert)
-  //     snippetPromise = restLoader.load(params.id)
-  //     snippetPromise.then(snippet => {
-  //       setDocument(snippet.data)
-  //       // Do not set these as we get dummy data from service
-  //       // (pastebin does not expose metadata info via API)
-  //       // setEphemeral(snippet.metadata.ephemeral)
-  //       // setLanguage(snippet.metadata.language)
-  //       setLoading(false)
-  //     }).catch(e => {
-  //       switch (e.response.status) {
-  //         case 403:
-  //         case 404:
-  //           setAlert('snippet not found')
-  //           setDocument('snippet not found')
-  //           setTimeout(() => {
-  //             onDuplicateAndEdit()
-  //             setLoading(false)
-  //             setDocument('')
-  //           }, 5000)
-  //           break;
-  //         default:
-  //           console.log(e)
-  //           setAlert('something went wrong: ' + e)
-  //           setDocument('something went wrong: ' + e)
-  //           setTimeout(() => {
-  //             onDuplicateAndEdit()
-  //             setLoading(false)
-  //             setDocument('')
-  //           }, 5000)
-  //       }
-  //     })
-  //   } else {
-  //     navigate('/')
-  //   }
-  // }, []) // only runs on mount
+  // load snippet from pastebin
+  // if id is present in url
+  // and document is empty
+  useEffect(() => {
+    if (params.id) {
+      setReadOnly(true)
+      setLoading(true)
+      let snippetPromise = undefined
+      const restLoader = new RestService(setAlert)
+      snippetPromise = restLoader.load(params.id)
+      snippetPromise.then(snippet => {
+        // Convert back to array
+        const snips = snippet.data.split('//<-> ) pastebin1s.com ( <-> \\\\\r\n')
+        if (snips.length !== 2) {
+          setPrimaryDocument(snippet.data)
+          setLoading(false)
+          return
+        }
+        const parsedSnippets: Snippet[] = JSON.parse(snips[1])
+        setSnippets(parsedSnippets)
+        setLoading(false)
+      }).catch(e => {
+        switch (e.response.status) {
+          case 403:
+          case 404:
+            setAlert('snippet not found')
+            setTimeout(() => {
+              onDuplicateAndEdit()
+              setLoading(false)
+              setPrimaryDocument('')
+            }, 5000)
+            break;
+          default:
+            console.log(e)
+            setAlert('something went wrong: ' + e)
+            setPrimaryDocument('something went wrong: ' + e)
+            setTimeout(() => {
+              onDuplicateAndEdit()
+              setLoading(false)
+              setPrimaryDocument('')
+            }, 5000)
+        }
+      })
+    } else {
+      navigate('/')
+    }
+  }, []) // only runs on mount
 
-  // const onSave = () => {
-  //   if (document === "" || document === "cannot save empty snippet!") {
-  //     setAlert("cannot save empty snippet!")
-  //     return
-  //   }
+  const onSave = () => {
+    // Snippet2 is Snippet without languageExtension
+    interface Snippet2 {
+      uuid: string,
+      name: string,
+      language: string,
+      document: string
+    }
+    const validSnippets: Array<Snippet2> = snippets.filter(snippet => snippet.document !== "").map(snippet => {
+      return {
+        uuid: snippet.uuid,
+        name: snippet.name,
+        language: snippet.language,
+        document: snippet.document
+      }
+    })
+    if (validSnippets.length === 0) {
+      setAlert("nothing to save")
+      return
+    }
 
-  //   setLoading(true)
+    let document: string = "//<-> ) pastebin1s.com ( <-> \\\\\n"
+    document += JSON.stringify(validSnippets)
 
-  //   new RestService(setAlert).save({
-  //     data: document,
-  //     metadata: {
-  //       id: "placeholder",
-  //       language: language,
-  //       ephemeral: ephemeral
-  //     }
-  //   }).then(res => {
-  //     navigate('/' + res)
-  //     setAlert("saved")
-  //     setReadOnly(true)
-  //     setLoading(false)
-  //   }).catch(e => {
-  //     setLoading(false)
-  //     console.log(e)
-  //     setAlert('something went wrong: ' + e)
-  //   })
-  // }
+    setReadOnly(true)
+    setLoading(true)
+
+    new RestService(setAlert).save({
+      data: document,
+      metadata: {
+        id: "placeholder",
+        ephemeral: ephemeral
+      }
+    }).then(res => {
+      navigate('/' + res)
+      setAlert("saved")
+      setLoading(false)
+    }).catch(e => {
+      setLoading(false)
+      setReadOnly(false)
+      console.log(e)
+      setAlert('something went wrong: ' + e)
+    })
+  }
 
   const onDuplicateAndEdit = () => {
     setReadOnly(false)
@@ -203,7 +230,6 @@ function App() {
 
   // handle window width change
   useEffect(() => {
-    console.log("window width changed")
     if (desktopView) {
       setMenuOpen(false)
     } else {
@@ -260,7 +286,7 @@ function App() {
             </div>}
         </div>
         {(menuOpen || desktopView) && <div className='lg:w-1/4 xl:w-1/5 2xl:w-1/6 w-full'>
-          <MenuBar duplicateAndEdit={onDuplicateAndEdit} id={readOnly ? params.id : undefined} save={() => { }} />
+          <MenuBar duplicateAndEdit={onDuplicateAndEdit} id={readOnly ? params.id : undefined} save={onSave} />
         </div>}
       </div>
     </div>

@@ -1,5 +1,5 @@
 
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { useEditorStore } from "../../editorStore"
 import { useSnippetStore } from "../../snippetStore"
 import LanguageSelector from "./LanguageSelector";
