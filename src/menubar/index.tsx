@@ -1,9 +1,9 @@
-import { Fragment, useState } from "react"
+import { Fragment } from "react"
 import { useEditorStore } from "../editorStore"
-import { useSnippetStore } from "../snippetStore"
 import EditorOptions from "./EditorOptions/EditorOptions"
 import SnippetContainer from "./SnippetContainer/SnippetContainer"
 import SnippetOptions from "./SnippetOptions/SnippetOptions"
+
 interface menubarProps {
   id?: string
   save: () => void
