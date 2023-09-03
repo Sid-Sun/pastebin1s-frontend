@@ -12,9 +12,9 @@ function LanguageSelector(props: languageSelectProps) {
   const loading = useEditorStore.use.loading()
 
   return (<React.Fragment>
-    <div className="items-center mt-0">
+    <div className="items-center my-1">
       <label htmlFor="language" className="text-center font-mono pb-2">{label}</label>
-      <select disabled={loading} value={language} onChange={e => setLanguage(e.target.value)} id="language" className="h-8 form-select appearance-none block w-full px-1 py-0.5 text-base font-mono text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out mx-0 mt-0.5 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+      <select disabled={loading} value={language} onChange={e => setLanguage(e.target.value)} id="language" className="h-10 form-select appearance-none block w-full px-1 py-0.5 text-base font-mono text-gray-700 bg-pink-50 bg-clip-padding bg-no-repeat border border-solid border-pink-50 rounded transition ease-in-out mx-0 mt-0.5 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
         <option value="cpp">c++</option>
         {enableAllLanguages && <option value="dockerfile">dockerfile</option>}
         <option value="go">go</option>
