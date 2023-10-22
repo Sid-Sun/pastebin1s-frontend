@@ -14,6 +14,7 @@ import { RestService } from './service/rest';
 
 import { Snippet, useSnippetStore } from './snippetStore';
 import { useEditorStore } from './editorStore';
+import { FormPrompt } from './FormPromt';
 
 const PRIMARY_SNIPPET = 0
 const SECONDARY_SNIPPET = 1
@@ -246,6 +247,8 @@ function App() {
       setSplitPane(false)
     }
   }, [secondarySnippet, setSplitPane])
+
+  FormPrompt({hasUnsavedChanges: (primarySnippet.document !== "" || (secondarySnippet && secondarySnippet.document !== ""))})
 
   return (
     <div>
