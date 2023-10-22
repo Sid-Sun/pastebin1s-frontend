@@ -1,6 +1,7 @@
 import axios from "axios";
 import { environment } from "../environment";
 import { SnippetModel } from "../model";
+import { useEditorStore } from "../editorStore";
 
 export class RestService {
   setAlert: (message: string) => void
@@ -14,6 +15,12 @@ export class RestService {
       bodyFormData.append("api_paste_code", snippet.data)
       bodyFormData.append("api_option", "paste")
       bodyFormData.append("api_paste_expire_date", snippet.metadata.ephemeral ? "1M" : "N")
+      const devKey = useEditorStore.getState().devKey
+      if (devKey !== undefined) {
+        if (devKey !== "") {
+          bodyFormData.append("api_dev_key", devKey)
+        }
+      }
       axios.post(environment.APIBaseURL + "create", bodyFormData).then((res) => {
         let data = {
           URL: res.data

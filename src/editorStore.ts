@@ -26,6 +26,8 @@ const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
 const getFontSize = (): number => localStorage.getItem('fontsize') === null ? 16 : parseInt(localStorage.getItem('fontsize'))
 
 const getDefaultValues = (): EditorStore => ({
+  // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary
+  devKey: localStorage.getItem('dev_key') === null ? undefined : localStorage.getItem('dev_key'),
   editorWidth: 0,
   editorHeight: 0,
   readOnly: false,
@@ -47,6 +49,7 @@ const getDefaultValues = (): EditorStore => ({
 })
 
 interface EditorStore {
+  devKey: string | undefined,
   dimensions: { width: number, height: number },
   dismisser: NodeJS.Timeout | undefined,
   editorWidth: number,
@@ -67,6 +70,7 @@ interface EditorStore {
 }
 
 interface EditorStoreActions {
+  setDevKey: (devKey: string) => void,
   setDismisser: (dismisser: NodeJS.Timeout | undefined) => void,
   setDimensions: (dimensions: { width: number, height: number }) => void,
   setEditorWidth: (editorWidth: number) => void,
@@ -87,6 +91,10 @@ interface EditorStoreActions {
 }
 
 const useEditorStoreBase = create<EditorStore & EditorStoreActions>(combine(getDefaultValues(), (set) => ({
+  setDevKey: (devKey: string) => {
+    set({devKey})
+    localStorage.setItem('dev_key', devKey)
+  },
   setDismisser: (dismisser: NodeJS.Timeout | undefined) => set({ dismisser }),
   setDimensions: (dimensions: { width: number, height: number }) => set({ dimensions }),
   setEditorWidth: (editorWidth: number) => set({ editorWidth }),

@@ -18,6 +18,7 @@ function MenuBar(props: menubarProps) {
   let loading = useEditorStore.use.loading()
   let readOnly = useEditorStore.use.readOnly()
   let desktopView = useEditorStore.use.desktopView()
+  let devKey = useEditorStore.use.devKey()
 
   return (
     <Fragment>
@@ -29,6 +30,8 @@ function MenuBar(props: menubarProps) {
           <div>
             <div>
               <h4 className="font-mono text-xl pb-4 mt-6">Paste Actions</h4>
+              <label htmlFor="password" className="text-center font-mono mb-4">Custom API Key (optional):</label>
+              <input onChange={e => useEditorStore.getState().setDevKey(e.target.value)} value={devKey} className="shadow appearance-none w-full py-2 px-3 text-base text-gray-700 focus:text-gray-700 mb-3 mt-1 leading-tight focus:outline-none focus:shadow-outline bg-pink-50 bg-clip-padding bg-no-repeat border border-solid border-pink-50 rounded" id="password" type="password" placeholder="******************"/>
               <div className="flex space-x-2 justify-center">
                 {!readOnly && <button disabled={loading} onClick={props.save} className={"inline-block w-full h-10 px-6 py-2.5 bg-pink-600 active:bg-pink-300 "+ (desktopView? "hover:bg-pink-300 hover:text-black" : "") +" text-white font-medium font-mono text-md leading-tight rounded shadow-lg transition duration-150 ease-in-out"}>
                   <p>Save Snippets</p>
