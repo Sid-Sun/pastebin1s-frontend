@@ -261,6 +261,19 @@ function App() {
               extensions={primaryExtensions}
               height={editorHeight.toString() + 'px'}
               width={(splitPane ? (editorWidth / 2).toString() : editorWidth.toString()) + 'px'}
+              placeholder={`💖 Pastebin1s is an alternative user-friendly, developer-oriented, mobile-friendly 📱 frontend to pastebin.com
+🎅 Features:
+ 🚀 Pastes are stored on pastebin.com
+ ✨ Open any pastebin.com paste - just make it pastebin1s.com
+ ⚡ Use curl to create a paste:
+ ⌨️ curl --upload-file hello.txt https://api.pastebin1s.com/raw
+⚠️ pastebin.com API rate-limits creating guest pastes to bypass this:
+ 💻 sign up / log in at pastebin.com
+ 🔑 go to https://pastebin.com/doc_api and copy your "Unique Developer API Key"
+ 📋 paste it under "custom API key" on pastebin1s.com
+ℹ️ About:
+ 👩‍💻 Developed and hosted by Sid Sun (sid@sidsun.com)
+ 🙇‍♀️ Inspired from github1s.com - which incidentally I proxy at vsgithub.com for browser auto-complete reasons`}
               onChange={(value) => {
                 useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
                   document: value,
