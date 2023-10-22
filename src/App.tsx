@@ -270,7 +270,7 @@ function App() {
  ✨ Open any pastebin.com paste - just make it pastebin1s.com
  ⚡ Use curl to create a paste:
  ⌨️ curl --upload-file hello.txt https://api.pastebin1s.com/raw
-⚠️ pastebin.com API rate-limits creating guest pastes to bypass this:
+⚠️ pastebin.com API rate-limits creating guest pastes, to bypass this:
  💻 sign up / log in at pastebin.com
  🔑 go to https://pastebin.com/doc_api and copy your "Unique Developer API Key"
  📋 paste it under "custom API key" on pastebin1s.com
