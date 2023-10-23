@@ -248,7 +248,7 @@ function App() {
     }
   }, [secondarySnippet, setSplitPane])
 
-  FormPrompt({hasUnsavedChanges: (primarySnippet.document !== "" || (secondarySnippet && secondarySnippet.document !== ""))})
+  FormPrompt({hasUnsavedChanges: (!readOnly && (primarySnippet.document !== "" || (secondarySnippet && secondarySnippet.document !== "")))})
 
   return (
     <div>
