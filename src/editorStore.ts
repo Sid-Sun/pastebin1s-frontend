@@ -42,7 +42,7 @@ const getDefaultValues = (): EditorStore => ({
   wrapLines: localStorage.getItem('wrapline') === "no" ? false : true,
   fontSize: getFontSize(),
   // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary
-  theme: (localStorage.getItem('theme') === null ? "aura" : localStorage.getItem('theme')),
+  theme: (localStorage.getItem('theme') === null ? "github-dark" : localStorage.getItem('theme')),
   themeExtension: aura,
   primaryExtensions: [getFontSizeExtension(getFontSize())],
   secondaryExtensions: [getFontSizeExtension(getFontSize())],
