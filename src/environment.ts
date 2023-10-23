@@ -1,4 +1,4 @@
 export const environment = {
-  APIBaseURL: "https://api.pastebin1s.com/",
+  APIBaseURL: "https://pastebin1s.com/api/",
   Separator: "++++++++++[>++++++>++++++++>++++++>+++++++<<<<-]>>.<.>+++++++.>>.>+.<<+++++.>>.<++++++.>.>+.>>.<<+++++.>>.>++++++.>.<+++++++.>.<<<++++++.>.<++++++.>.<++++++.>."
 }

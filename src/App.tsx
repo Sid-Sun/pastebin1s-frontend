@@ -268,8 +268,9 @@ function App() {
 🎅 Features:
  🚀 Pastes are stored on pastebin.com
  ✨ Open any pastebin.com paste - just make it pastebin1s.com
+ 🪟 One editor isn't enough! Add another snippet and the split the editor!
  ⚡ Use curl to create a paste:
- ⌨️ curl --upload-file hello.txt https://api.pastebin1s.com/raw
+ ⌨️ curl --upload-file hello.txt https://pastebin1s.com/api/raw
 ⚠️ pastebin.com API rate-limits creating guest pastes, to bypass this:
  💻 sign up / log in at pastebin.com
  🔑 go to https://pastebin.com/doc_api and copy your "Unique Developer API Key"
