@@ -70,10 +70,10 @@ function MenuBar(props: menubarProps) {
           </div>
         </div>
         <div className="text-center text-sm my-8 font-mono mx-1">
-            <p>Designed by <a href="https://chakshu.design" rel="noreferrer" target="_blank">Chakshu Khanna</a> in California</p>
-            <p>Made in China by Sid</p>
+            <p>Designed by <a href="https://chakshu.design" rel="noreferrer" target="_blank">Chakshu Khanna</a> in California.</p>
+            <p>Developed 👩‍💻 by <a href="https://sidsun.com" rel="noreferrer" target="_blank">Sid Sun</a> 🏳️‍🌈</p>
             <br/>
-            <p>Copyright © 2023 CCP.</p>
+            <p>Copyright © {new Date().getFullYear()} Sid Sun.</p>
          </div>
       </div>
     </Fragment>
