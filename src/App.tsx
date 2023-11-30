@@ -304,7 +304,7 @@ function App() {
         (secondarySnippet && secondarySnippet.document !== "")),
   });
 
-  const debounce = (fn: Function, ms = 300) => {
+  const debounce = (fn: Function, ms = 200) => {
     let timeoutId: ReturnType<typeof setTimeout>;
     return function (this: any, ...args: any[]) {
       clearTimeout(timeoutId);
