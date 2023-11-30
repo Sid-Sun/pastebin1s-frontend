@@ -348,13 +348,11 @@ function App() {
 ℹ️ About:
  👩‍💻 Developed and hosted by Sid Sun (sid@sidsun.com)
  🙇‍♀️ Inspired from github1s.com - which incidentally I proxy at vsgithub.com for browser auto-complete reasons`}
-                onChange={(value) => {
-                  debounce(() => {
-                    useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
-                      document: value,
-                    });
+                onChange={debounce((value: string) => {
+                  useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
+                    document: value,
                   });
-                }}
+                })}
               />
             </div>
           )}
@@ -368,15 +366,11 @@ function App() {
                 extensions={secondaryExtensions}
                 height={editorHeight.toString() + "px"}
                 width={(editorWidth / 2).toString() + "px"}
-                onChange={(value) => {
-                  debounce(() => {
-                    useSnippetStore
-                      .getState()
-                      .updateSnippet(SECONDARY_SNIPPET, {
-                        document: value,
-                      });
+                onChange={debounce((value: string) => {
+                  useSnippetStore.getState().updateSnippet(SECONDARY_SNIPPET, {
+                    document: value,
                   });
-                }}
+                })}
               />
             </div>
           )}
