@@ -7774,7 +7774,7 @@ const wordlist = [
   "zookeeper",
   "zoologist",
   "zoology",
-  "zoom"
-]
+  "zoom",
+];
 
-export default wordlist
+export default wordlist;

@@ -1,19 +1,19 @@
 export interface SnippetModel {
-  metadata: SnippetMetadataModel
-  data: string
+  metadata: SnippetMetadataModel;
+  data: string;
 }
 
 interface SnippetMetadataModel {
-  id: string
-  ephemeral: boolean
+  id: string;
+  ephemeral: boolean;
 }
 
 export interface SnippetSpecModel {
-  version: string
-  keysalt: string
-  ephemeral: boolean
-  initvector: string
-  ciphertext: string
+  version: string;
+  keysalt: string;
+  ephemeral: boolean;
+  initvector: string;
+  ciphertext: string;
 }
 
 export enum SnippetSpecVersion {
@@ -25,5 +25,5 @@ export enum SnippetType {
   StaticSnippet = +1,
   EphemeralSnippet,
   ProlongedSnippet,
-  InvalidSnippet
+  InvalidSnippet,
 }

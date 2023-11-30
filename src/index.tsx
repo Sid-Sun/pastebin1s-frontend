@@ -1,23 +1,24 @@
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, useRoutes } from 'react-router-dom';
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter, useRoutes } from "react-router-dom";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement,
 );
 
-const Application = () => useRoutes([
-  { path: "/", element: <App /> },
-  { path: "/:id", element: <App /> },
-  { path: "*", element: <App /> },
-]);
+const Application = () =>
+  useRoutes([
+    { path: "/", element: <App /> },
+    { path: "/:id", element: <App /> },
+    { path: "*", element: <App /> },
+  ]);
 
 root.render(
   <BrowserRouter>
     <Application />
-  </BrowserRouter>
+  </BrowserRouter>,
 );
 
 // If you want to start measuring performance in your app, pass a function

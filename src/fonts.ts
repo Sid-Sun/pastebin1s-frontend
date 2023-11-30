@@ -7,8 +7,7 @@ const getFontSizeExtension = (fontSize: number) => {
       fontSize: fontSize + "pt",
     },
   });
-  return FontSizeTheme
-}
+  return FontSizeTheme;
+};
 
-
-export default getFontSizeExtension
+export default getFontSizeExtension;
