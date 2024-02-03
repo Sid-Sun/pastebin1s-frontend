@@ -1,6 +1,5 @@
-import CodeMirror from "@uiw/react-codemirror";
 import { Extension } from "@codemirror/state";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EditorView } from "@codemirror/view";
 import { useNavigate, useParams } from "react-router-dom";
 import "./App.css";
@@ -15,6 +14,7 @@ import { RestService } from "./service/rest";
 import { Snippet, useSnippetStore } from "./snippetStore";
 import { useEditorStore } from "./editorStore";
 import { FormPrompt } from "./FormPromt";
+import { useCodeMirror } from '@uiw/react-codemirror';
 
 const PRIMARY_SNIPPET = 0;
 const SECONDARY_SNIPPET = 1;
@@ -86,6 +86,57 @@ function App() {
     dismisser: state.dismisser,
     setDismisser: state.setDismisser,
   }));
+
+  // interval ID for refreshing snippets with intervals
+  const [rif, setRIF] = useState();
+
+  const placeholder = `💖 Pastebin1s is an alternative user-friendly, developer-oriented, mobile-friendly 📱 frontend to pastebin.com
+  🎅 Features:
+   🚀 Pastes are stored on pastebin.com
+   ✨ Open any pastebin.com paste - just make it pastebin1s.com
+   🪟 One editor isn't enough! Add another snippet and the split the editor!
+   ⚡ Use curl to create a paste:
+   ⌨️ curl --upload-file hello.txt https://pastebin1s.com/api/raw
+  ⚠️ pastebin.com API rate-limits creating guest pastes, to bypass this:
+   💻 sign up / log in at pastebin.com
+   🔑 go to https://pastebin.com/doc_api and copy your "Unique Developer API Key"
+   📋 paste it under "custom API key" on pastebin1s.com
+  ℹ️ About:
+   👩‍💻 Developed and hosted by Sid Sun (sid@sidsun.com)
+   🙇‍♀️ Inspired from github1s.com - which incidentally I proxy at vsgithub.com for browser auto-complete reasons`
+
+  const getWidth = () => {
+    return (splitPane
+      ? (editorWidth / 2).toString()
+      : editorWidth.toString()) + "px";
+  }
+
+  // Editors
+  const primaryEditorContainer = useRef<HTMLDivElement>(null);
+  const { setContainer: primaryEditorSetContainer, view: primaryEditorView } = useCodeMirror({
+    autoFocus: true,
+    container: primaryEditorContainer.current,
+    value: primarySnippet.document,
+    readOnly: readOnly || loading,
+    theme: themeExtension,
+    extensions: primaryExtensions,
+    height: editorHeight.toString() + "px",
+    width: getWidth(),
+    placeholder: placeholder
+  });
+
+  const secondaryEditorContainer = useRef<HTMLDivElement>(null);
+  const { setContainer: secondaryEditorSetContainer, view: secondaryEditorView } = useCodeMirror({
+    autoFocus: false,
+    container: secondaryEditorContainer.current,
+    value: secondarySnippet?.document || "",
+    readOnly: readOnly || loading,
+    theme: themeExtension,
+    extensions: secondaryExtensions,
+    height: editorHeight.toString() + "px",
+    width: getWidth(),
+  });
+
 
   // handle window dimensions change
   useWindowDimensions();
@@ -304,13 +355,48 @@ function App() {
         (secondarySnippet && secondarySnippet.document !== "")),
   });
 
-  const debounce = (fn: Function, ms = 200) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return function (this: any, ...args: any[]) {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => fn.apply(this, args), ms);
-    };
-  };
+  useEffect(() => {
+    if (primaryEditorContainer.current) {
+      primaryEditorSetContainer(primaryEditorContainer.current);
+    }
+  }, [primaryEditorContainer]);
+
+  useEffect(() => {
+    if (secondaryEditorContainer.current) {
+      secondaryEditorSetContainer(secondaryEditorContainer.current);
+    }
+    // we need splitPane here to make editor mount properly
+  }, [secondaryEditorContainer, splitPane]);
+
+  useEffect(() => {
+    if (primaryEditorView !== undefined) {
+      // make sure there is no existing interval
+      // console.log('NEW INTERVAL INCOMING')
+      if (rif !== undefined) {
+        clearInterval(rif);
+      }
+      let intevalID = setInterval(() => {
+        if (primaryEditorView) {
+          const currentDoc = primaryEditorView.state.doc.sliceString(0)
+          if (useSnippetStore.getState().snippets[PRIMARY_SNIPPET].document !== currentDoc) {
+            useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
+              document: currentDoc,
+            });
+          }
+        }
+        if (secondaryEditorView) {
+          const currentDoc = secondaryEditorView.state.doc.sliceString(0)
+          if (useSnippetStore.getState().snippets[SECONDARY_SNIPPET].document !== currentDoc) {
+            useSnippetStore.getState().updateSnippet(SECONDARY_SNIPPET, {
+              document: currentDoc,
+            });
+          }
+        }
+      }, 1000)
+      // @ts-ignore - stupid TS thinks we are calling nodeJS setInterval
+      setRIF(intevalID);
+    }
+  }, [primaryEditorView, secondaryEditorView])
 
   return (
     <div>
@@ -322,56 +408,12 @@ function App() {
         >
           {!menuOpen && (
             <div className={splitPane ? "w-1/2" : "w-screen"}>
-              <CodeMirror
-                autoFocus={true}
-                value={primarySnippet.document}
-                readOnly={readOnly || loading}
-                theme={themeExtension}
-                extensions={primaryExtensions}
-                height={editorHeight.toString() + "px"}
-                width={
-                  (splitPane
-                    ? (editorWidth / 2).toString()
-                    : editorWidth.toString()) + "px"
-                }
-                placeholder={`💖 Pastebin1s is an alternative user-friendly, developer-oriented, mobile-friendly 📱 frontend to pastebin.com
-🎅 Features:
- 🚀 Pastes are stored on pastebin.com
- ✨ Open any pastebin.com paste - just make it pastebin1s.com
- 🪟 One editor isn't enough! Add another snippet and the split the editor!
- ⚡ Use curl to create a paste:
- ⌨️ curl --upload-file hello.txt https://pastebin1s.com/api/raw
-⚠️ pastebin.com API rate-limits creating guest pastes, to bypass this:
- 💻 sign up / log in at pastebin.com
- 🔑 go to https://pastebin.com/doc_api and copy your "Unique Developer API Key"
- 📋 paste it under "custom API key" on pastebin1s.com
-ℹ️ About:
- 👩‍💻 Developed and hosted by Sid Sun (sid@sidsun.com)
- 🙇‍♀️ Inspired from github1s.com - which incidentally I proxy at vsgithub.com for browser auto-complete reasons`}
-                onChange={debounce((value: string) => {
-                  useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
-                    document: value,
-                  });
-                })}
-              />
+              <div ref={primaryEditorContainer} />
             </div>
           )}
           {!menuOpen && snippets.length >= 2 && splitPane && (
             <div className="w-1/2" style={{ order: 2 }}>
-              <CodeMirror
-                autoFocus={false}
-                value={secondarySnippet.document}
-                readOnly={readOnly || loading}
-                theme={themeExtension}
-                extensions={secondaryExtensions}
-                height={editorHeight.toString() + "px"}
-                width={(editorWidth / 2).toString() + "px"}
-                onChange={debounce((value: string) => {
-                  useSnippetStore.getState().updateSnippet(SECONDARY_SNIPPET, {
-                    document: value,
-                  });
-                })}
-              />
+              <div ref={secondaryEditorContainer} />
             </div>
           )}
         </div>

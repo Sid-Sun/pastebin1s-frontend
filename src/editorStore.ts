@@ -22,11 +22,15 @@ const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
   return store;
 };
 
+// setInterval(() => {
+//   console.log("tick baabbyyy")
+// }, 1000)
+
 const getFontSize = (): number =>
   localStorage.getItem("fontsize") === null
     ? 16
     : // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary
-      parseInt(localStorage.getItem("fontsize"));
+    parseInt(localStorage.getItem("fontsize"));
 
 const getDefaultValues = (): EditorStore => ({
   // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary

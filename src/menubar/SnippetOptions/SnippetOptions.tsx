@@ -33,12 +33,14 @@ function SnippetOptions() {
     <Fragment>
       <h4 className="mt-6 pb-1 font-mono text-xl">Snippet Options</h4>
       <LanguageSelector
+        uid="language1"
         language={primaryLanguage}
         setLanguage={setPrimaryLanguage}
         label={snippets.length > 1 ? "Snippet 1 Language:" : "Language:"}
       />
       {splitPane && (
         <LanguageSelector
+          uid="language2"
           language={secondaryLanguage}
           setLanguage={setSecondaryLanguage}
           label="Snippet 2 Language:"

@@ -1,6 +1,7 @@
 import React from "react";
 import { useEditorStore } from "../../editorStore";
 interface languageSelectProps {
+  uid: string;
   label: string;
   language: string;
   setLanguage: (language: string) => void;
@@ -8,20 +9,20 @@ interface languageSelectProps {
 
 function LanguageSelector(props: languageSelectProps) {
   const enableAllLanguages = useEditorStore.use.enableAllLanguages();
-  const { label, language, setLanguage } = props;
+  const { uid, label, language, setLanguage } = props;
   const loading = useEditorStore.use.loading();
 
   return (
     <React.Fragment>
       <div className="my-1 items-center">
-        <label htmlFor="language" className="pb-2 text-center font-mono">
+        <label htmlFor={uid} className="pb-2 text-center font-mono">
           {label}
         </label>
         <select
           disabled={loading}
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          id="language"
+          id={uid}
           className="form-select mx-0 mt-0.5 block h-10 w-full appearance-none rounded border border-solid border-pink-50 bg-pink-50 bg-clip-padding bg-no-repeat px-1 py-0.5 font-mono text-base text-gray-700 transition ease-in-out focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none"
         >
           <option value="cpp">c++</option>
