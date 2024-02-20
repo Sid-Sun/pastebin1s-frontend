@@ -6,6 +6,8 @@ import Snippet from "../snippet/snippet";
 function SnippetContainer() {
   const snippets = useSnippetStore.use.snippets();
   const createSnippet = useSnippetStore.use.createSnippet();
+  const makeSnippetPrimary = useSnippetStore.use.makeSnippetPrimary();
+  const makeSnippetSecondary = useSnippetStore.use.makeSnippetSecondary();
   const readOnly = useEditorStore.use.readOnly();
   const { splitPane, setSplitPane } = useEditorStore((state) => ({
     splitPane: state.splitPane,
@@ -14,6 +16,19 @@ function SnippetContainer() {
   const { desktopView } = useEditorStore((state) => ({
     desktopView: state.desktopView,
   }));
+
+  const createSnippetWithSwap = () => { 
+    const newSnippetIndex = snippets.length;
+    createSnippet();
+    switch (splitPane) {
+      case true:
+        makeSnippetSecondary(newSnippetIndex);
+        break;
+      case false:
+        makeSnippetPrimary(newSnippetIndex);
+        break;
+    }
+  }
 
   return (
     <React.Fragment>
@@ -27,7 +42,7 @@ function SnippetContainer() {
         <div className="mt-4 flex items-stretch justify-center">
           <button
             onClick={() => {
-              createSnippet();
+              createSnippetWithSwap();
             }}
             className={
               "mx-auto inline-block h-10 w-full bg-rose-200 px-6 py-2.5 active:bg-rose-600 active:text-white " +
