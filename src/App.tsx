@@ -14,7 +14,7 @@ import { RestService } from "./service/rest";
 import { Snippet, useSnippetStore } from "./snippetStore";
 import { useEditorStore } from "./editorStore";
 import { FormPrompt } from "./FormPromt";
-import { useCodeMirror } from '@uiw/react-codemirror';
+import { useCodeMirror } from "@uiw/react-codemirror";
 
 const PRIMARY_SNIPPET = 0;
 const SECONDARY_SNIPPET = 1;
@@ -103,30 +103,34 @@ function App() {
    📋 paste it under "custom API key" on pastebin1s.com
   ℹ️ About:
    👩‍💻 Developed and hosted by Sid Sun (sid@sidsun.com)
-   🙇‍♀️ Inspired from github1s.com - which incidentally I proxy at vsgithub.com for browser auto-complete reasons`
+   🙇‍♀️ Inspired from github1s.com - which incidentally I proxy at vsgithub.com for browser auto-complete reasons`;
 
   const getWidth = () => {
-    return (splitPane
-      ? (editorWidth / 2).toString()
-      : editorWidth.toString()) + "px";
-  }
+    return (
+      (splitPane ? (editorWidth / 2).toString() : editorWidth.toString()) + "px"
+    );
+  };
 
   // Editors
   const primaryEditorContainer = useRef<HTMLDivElement>(null);
-  const { setContainer: primaryEditorSetContainer, view: primaryEditorView } = useCodeMirror({
-    autoFocus: true,
-    container: primaryEditorContainer.current,
-    value: primarySnippet.document,
-    readOnly: readOnly || loading,
-    theme: themeExtension,
-    extensions: primaryExtensions,
-    height: editorHeight.toString() + "px",
-    width: getWidth(),
-    placeholder: placeholder
-  });
+  const { setContainer: primaryEditorSetContainer, view: primaryEditorView } =
+    useCodeMirror({
+      autoFocus: true,
+      container: primaryEditorContainer.current,
+      value: primarySnippet.document,
+      readOnly: readOnly || loading,
+      theme: themeExtension,
+      extensions: primaryExtensions,
+      height: editorHeight.toString() + "px",
+      width: getWidth(),
+      placeholder: placeholder,
+    });
 
   const secondaryEditorContainer = useRef<HTMLDivElement>(null);
-  const { setContainer: secondaryEditorSetContainer, view: secondaryEditorView } = useCodeMirror({
+  const {
+    setContainer: secondaryEditorSetContainer,
+    view: secondaryEditorView,
+  } = useCodeMirror({
     autoFocus: false,
     container: secondaryEditorContainer.current,
     value: secondarySnippet?.document || "",
@@ -136,7 +140,6 @@ function App() {
     height: editorHeight.toString() + "px",
     width: getWidth(),
   });
-
 
   // handle window dimensions change
   useWindowDimensions();
@@ -359,14 +362,14 @@ function App() {
     if (primaryEditorContainer.current) {
       primaryEditorSetContainer(primaryEditorContainer.current);
     }
-  }, [primaryEditorContainer]);
+  }, [primaryEditorContainer, menuOpen]);
 
   useEffect(() => {
     if (secondaryEditorContainer.current) {
       secondaryEditorSetContainer(secondaryEditorContainer.current);
     }
     // we need splitPane here to make editor mount properly
-  }, [secondaryEditorContainer, splitPane]);
+  }, [secondaryEditorContainer, splitPane, menuOpen]);
 
   useEffect(() => {
     if (primaryEditorView !== undefined) {
@@ -377,26 +380,32 @@ function App() {
       }
       let intevalID = setInterval(() => {
         if (primaryEditorView) {
-          const currentDoc = primaryEditorView.state.doc.sliceString(0)
-          if (useSnippetStore.getState().snippets[PRIMARY_SNIPPET].document !== currentDoc) {
+          const currentDoc = primaryEditorView.state.doc.sliceString(0);
+          if (
+            useSnippetStore.getState().snippets[PRIMARY_SNIPPET].document !==
+            currentDoc
+          ) {
             useSnippetStore.getState().updateSnippet(PRIMARY_SNIPPET, {
               document: currentDoc,
             });
           }
         }
         if (secondaryEditorView) {
-          const currentDoc = secondaryEditorView.state.doc.sliceString(0)
-          if (useSnippetStore.getState().snippets[SECONDARY_SNIPPET].document !== currentDoc) {
+          const currentDoc = secondaryEditorView.state.doc.sliceString(0);
+          if (
+            useSnippetStore.getState().snippets[SECONDARY_SNIPPET].document !==
+            currentDoc
+          ) {
             useSnippetStore.getState().updateSnippet(SECONDARY_SNIPPET, {
               document: currentDoc,
             });
           }
         }
-      }, 1000)
+      }, 1000);
       // @ts-ignore - stupid TS thinks we are calling nodeJS setInterval
       setRIF(intevalID);
     }
-  }, [primaryEditorView, secondaryEditorView])
+  }, [primaryEditorView, secondaryEditorView]);
 
   return (
     <div>
