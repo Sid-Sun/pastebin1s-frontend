@@ -19,6 +19,8 @@ import { useCodeMirror } from "@uiw/react-codemirror";
 const PRIMARY_SNIPPET = 0;
 const SECONDARY_SNIPPET = 1;
 
+const PASTEBIN1S_HEADER_V2 = "//<-> ) pastebin1s.com V2 ( <-> \\\\\r\n";
+
 function App() {
   const navigate = useNavigate();
   let params = useParams();
@@ -232,7 +234,7 @@ function App() {
         .then((snippet) => {
           // Convert back to array
           const snips = snippet.data.split(
-            "//<-> ) pastebin1s.com ( <-> \\\\\r\n",
+            PASTEBIN1S_HEADER_V2,
           );
           if (snips.length !== 2) {
             setPrimaryDocument(snippet.data);
@@ -244,6 +246,7 @@ function App() {
           setLoading(false);
         })
         .catch((e) => {
+          console.error(e);
           switch (e.response.status) {
             case 403:
             case 404:
@@ -255,7 +258,7 @@ function App() {
               }, 5000);
               break;
             default:
-              console.log(e);
+              console.error(e);
               setAlert("something went wrong: " + e);
               setPrimaryDocument("something went wrong: " + e);
               setTimeout(() => {
@@ -293,7 +296,7 @@ function App() {
       return;
     }
 
-    let document: string = "//<-> ) pastebin1s.com ( <-> \\\\\n";
+    let document: string = PASTEBIN1S_HEADER_V2;
     document += JSON.stringify(validSnippets);
 
     setReadOnly(true);
