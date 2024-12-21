@@ -29,7 +29,7 @@ function MenuBar(props: menubarProps) {
         {showBranding && (
           <div className="bg-fuchsia-800 p-8">
             <a className="block text-center font-mono text-2xl" href="/">
-              PASTEBIN(1s)
+              PASTEBIN(1s) 🏳️‍🌈
             </a>
           </div>
         )}

@@ -92,7 +92,7 @@ function App() {
   // interval ID for refreshing snippets with intervals
   const [rif, setRIF] = useState();
 
-  const placeholder = `💖 Pastebin1s is an alternative user-friendly, developer-oriented, mobile-friendly 📱 frontend to pastebin.com
+  const placeholder = `💖 Pastebin1s is an alternative user-friendly, developer-oriented, mobile-friendly 📱 frontend to pastebin.com 🏳️‍🌈
   🎅 Features:
    🚀 Pastes are stored on pastebin.com
    ✨ Open any pastebin.com paste - just make it pastebin1s.com
@@ -104,8 +104,8 @@ function App() {
    🔑 go to https://pastebin.com/doc_api and copy your "Unique Developer API Key"
    📋 paste it under "custom API key" on pastebin1s.com
   ℹ️ About:
-   👩‍💻 Developed and hosted by Sid Sun (sid@sidsun.com)
-   🙇‍♀️ Inspired from github1s.com - which incidentally I proxy at vsgithub.com for browser auto-complete reasons`;
+   👩‍💻 Developed and hosted by Sid Sun (sid@sidsun.com) 🏳️‍🌈
+   🙇‍♀️ Inspired from github1s.com`;
 
   const getWidth = () => {
     return (
