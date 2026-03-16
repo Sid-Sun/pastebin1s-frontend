@@ -16,7 +16,7 @@ export class RestService {
       bodyFormData.append("api_option", "paste");
       bodyFormData.append(
         "api_paste_expire_date",
-        snippet.metadata.ephemeral ? "1M" : "N",
+        snippet.metadata.ephemeral ? "1M" : "N"
       );
       const devKey = useEditorStore.getState().devKey;
       if (devKey !== undefined) {
@@ -25,7 +25,10 @@ export class RestService {
         }
       }
       axios
-        .post(environment.APIBaseURL + "create", bodyFormData)
+        .post(environment.APIBaseURL + "create", bodyFormData, {
+          maxBodyLength: Infinity,
+          maxContentLength: Infinity,
+        })
         .then((res) => {
           let data = {
             URL: res.data,
