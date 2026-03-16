@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { combine } from "zustand/middleware";
 import { Extension } from "@codemirror/state";
 import { StoreApi, UseBoundStore } from "zustand";
-import { aura } from "@uiw/codemirror-theme-aura";
+import { noctisLilac } from "@uiw/codemirror-theme-noctis-lilac";
 import { getWindowDimensions } from "./dimensions";
 import getFontSizeExtension from "./fonts";
 
@@ -11,7 +11,7 @@ type WithSelectors<S> = S extends { getState: () => infer T }
   : never;
 
 const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
-  _store: S,
+  _store: S
 ) => {
   let store = _store as WithSelectors<typeof _store>;
   store.use = {};
@@ -30,7 +30,7 @@ const getFontSize = (): number =>
   localStorage.getItem("fontsize") === null
     ? 16
     : // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary
-    parseInt(localStorage.getItem("fontsize"));
+      parseInt(localStorage.getItem("fontsize"));
 
 const getDefaultValues = (): EditorStore => ({
   // @ts-ignore -- needed as TS thinks second localStorage.getItem() call would return null but it won't due to ternary
@@ -56,7 +56,7 @@ const getDefaultValues = (): EditorStore => ({
     localStorage.getItem("theme") === null
       ? "github-dark"
       : localStorage.getItem("theme"),
-  themeExtension: aura,
+  themeExtension: noctisLilac,
   primaryExtensions: [getFontSizeExtension(getFontSize())],
   secondaryExtensions: [getFontSizeExtension(getFontSize())],
 });
@@ -139,7 +139,7 @@ const useEditorStoreBase = create<EditorStore & EditorStoreActions>(
       set({ primaryExtensions }),
     setSecondaryExtensions: (secondaryExtensions: Extension[]) =>
       set({ secondaryExtensions }),
-  })),
+  }))
 );
 
 export const useEditorStore = createSelectors(useEditorStoreBase);

@@ -28,8 +28,11 @@ function EditorOptions() {
           onChange={(e) => setTheme(e.target.value)}
           className="form-select mx-0 mt-0.5 block h-10 w-full appearance-none rounded border border-solid border-pink-50 bg-pink-50 bg-clip-padding bg-no-repeat px-1 py-0.5 font-mono text-base text-gray-700 transition ease-in-out focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none"
         >
-          <option value="aura">Aura Dark</option>
+          <option value="lilac">Noctis Lilac</option>
+          <option value="xcode">Xcode Dark</option>
           <option value="github-dark">GitHub Dark</option>
+          <option value="gruvbox-dark">Gruvbox Dark</option>
+          <option value="gruvbox-light">Gruvbox Light</option>
           <option value="bbedit">BBEdit Light</option>
         </select>
       </div>

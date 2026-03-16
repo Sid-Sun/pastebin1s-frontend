@@ -1,4 +1,4 @@
-import { aura } from "@uiw/codemirror-theme-aura";
+import { noctisLilac } from "@uiw/codemirror-theme-noctis-lilac";
 import { useEditorStore } from "../editorStore";
 
 const setThemeExtension = useEditorStore.getState().setThemeExtension;
@@ -15,12 +15,24 @@ const handleThemeChange = (theme: string): string => {
         setThemeExtension(theme.bbedit);
       });
       return "bbedit";
-    case "aura":
-      setThemeExtension(aura);
-      return "aura";
+    case "gruvbox-dark":
+      import("@uiw/codemirror-theme-gruvbox-dark").then((theme) => {
+        setThemeExtension(theme.gruvboxDark);
+      });
+      return "gruvbox-dark";
+    case "gruvbox-light":
+      import("@uiw/codemirror-theme-gruvbox-dark").then((theme) => {
+        setThemeExtension(theme.gruvboxLight);
+      });
+      return "gruvbox-light";
+    case "xcode":
+      import("@uiw/codemirror-theme-xcode").then((theme) => {
+        setThemeExtension(theme.xcodeDark);
+      });
+      return "xcode";
     default:
-      setThemeExtension(aura);
-      return "aura";
+      setThemeExtension(noctisLilac);
+      return "lilac";
   }
 };
 
