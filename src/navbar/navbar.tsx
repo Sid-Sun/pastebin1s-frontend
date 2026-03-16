@@ -10,7 +10,7 @@ function navbar() {
         <div className="container-fluid flex w-full flex-wrap items-center justify-between px-6">
           <div className="container-fluid">
             <a className="block text-center font-mono text-xl" href="/">
-              PASTEBIN(1s)
+              PASTEBIN(1s) 🏳️‍🌈
             </a>
           </div>
           <a
