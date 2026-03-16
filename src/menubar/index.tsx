@@ -27,9 +27,17 @@ function MenuBar(props: menubarProps) {
     <Fragment>
       <div className="max-h-screen min-h-screen overflow-auto bg-gray-800 text-white">
         {showBranding && (
-          <div className="bg-fuchsia-800 p-8">
-            <a className="block text-center font-mono text-2xl" href="/">
-              PASTEBIN(1s)
+          <div
+            className="p-8"
+            style={{
+              background: 'linear-gradient(135deg, #E40303 0% 16.6%, #FF8C00 16.6% 33.3%, #FFED00 33.3% 50%, #008026 50% 66.6%, #24408E 66.6% 83.3%, #732982 83.3% 100%)'
+            }}
+          >
+            <a
+              className="block text-center font-mono text-2xl text-black drop-shadow-md"
+              href="/"
+            >
+              PASTEBIN(1s) 🏳️‍🌈
             </a>
           </div>
         )}
