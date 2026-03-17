@@ -391,8 +391,9 @@ function App() {
         }
         if (secondaryEditorView) {
           const currentDoc = secondaryEditorView.state.doc.sliceString(0);
+          const secondarySnippet = useSnippetStore.getState().snippets[SECONDARY_SNIPPET];
           if (
-            useSnippetStore.getState().snippets[SECONDARY_SNIPPET].document !==
+            secondarySnippet && secondarySnippet.document !==
             currentDoc
           ) {
             useSnippetStore.getState().updateSnippet(SECONDARY_SNIPPET, {

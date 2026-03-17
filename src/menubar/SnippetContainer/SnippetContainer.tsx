@@ -54,10 +54,13 @@ function SnippetContainer() {
           </button>
         </div>
       )}
-      {snippets.length >= 2 && desktopView && (
+      {desktopView && (
         <div className="mt-2 flex items-stretch justify-center">
           <button
             onClick={() => {
+              if (snippets.length === 1) {
+                createSnippet()
+              } // If there isn't a secondary snippet, create a new one and split so it becomes the secondary snippet
               setSplitPane(!splitPane);
             }}
             className={
