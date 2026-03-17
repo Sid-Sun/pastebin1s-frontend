@@ -111,11 +111,9 @@ function App() {
   };
 
   // Editors
-  const primaryEditorContainer = useRef<HTMLDivElement>(null);
   const { setContainer: primaryEditorSetContainer, view: primaryEditorView } =
     useCodeMirror({
       autoFocus: true,
-      container: primaryEditorContainer.current,
       value: primarySnippet.document,
       readOnly: readOnly || loading,
       theme: themeExtension,
@@ -125,13 +123,11 @@ function App() {
       placeholder: placeholder,
     });
 
-  const secondaryEditorContainer = useRef<HTMLDivElement>(null);
   const {
     setContainer: secondaryEditorSetContainer,
     view: secondaryEditorView,
   } = useCodeMirror({
     autoFocus: false,
-    container: secondaryEditorContainer.current,
     value: secondarySnippet?.document || "",
     readOnly: readOnly || loading,
     theme: themeExtension,
@@ -357,18 +353,7 @@ function App() {
         (secondarySnippet && secondarySnippet.document !== "")),
   });
 
-  useEffect(() => {
-    if (primaryEditorContainer.current) {
-      primaryEditorSetContainer(primaryEditorContainer.current);
-    }
-  }, [primaryEditorContainer, menuOpen]);
 
-  useEffect(() => {
-    if (secondaryEditorContainer.current) {
-      secondaryEditorSetContainer(secondaryEditorContainer.current);
-    }
-    // we need splitPane here to make editor mount properly
-  }, [secondaryEditorContainer, splitPane, menuOpen]);
 
   useEffect(() => {
     if (primaryEditorView !== undefined) {
@@ -415,16 +400,21 @@ function App() {
           className="flex lg:w-3/4 xl:w-4/5 2xl:w-5/6"
           ref={editorContainerRef}
         >
-          {!menuOpen && (
-            <div className={splitPane ? "w-1/2" : "w-screen"}>
-              <div ref={primaryEditorContainer} />
-            </div>
-          )}
-          {!menuOpen && snippets.length >= 2 && splitPane && (
-            <div className="w-1/2" style={{ order: 2 }}>
-              <div ref={secondaryEditorContainer} />
-            </div>
-          )}
+          <div
+            className={!menuOpen ? (splitPane ? "w-1/2" : "w-screen") : "hidden"}
+          >
+            <div ref={primaryEditorSetContainer} />
+          </div>
+          <div
+            className={
+              !menuOpen && snippets.length >= 2 && splitPane
+                ? "w-1/2"
+                : "hidden"
+            }
+            style={{ order: 2 }}
+          >
+            <div ref={secondaryEditorSetContainer} />
+          </div>
         </div>
         {(menuOpen || desktopView) && (
           <div className="w-full lg:w-1/4 xl:w-1/5 2xl:w-1/6">
